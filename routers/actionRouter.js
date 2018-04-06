@@ -13,6 +13,7 @@ router.get('/', (req, res) => {
 
 router.get('/:id', (req, res) => {
   const { id } = req.params;
+
   db
     .get(id)
     .then(action => res.status(200).json({ action }))
@@ -20,16 +21,36 @@ router.get('/:id', (req, res) => {
 });
 
 router.post('/', (req, res) => {
+  const { project_id, description } = req.body;
   const newAction = req.body;
+
+  if (!project_id || !description) {
+    res.status(400).json({ error: 'Please provide both project_id and description' });
+  }
+
+  if (description.length > 128) {
+    res.status(400).json({ error: 'Description must not exceed 128 characters' });
+  }
+
   db
     .insert(newAction)
-    .then(newAction => res.status(200).json({ newAction }))
+    .then(newAction => res.status(201).json({ newAction }))
     .catch(error => res.status(500).json({ error: 'Error creating action' }));
 });
 
 router.put('/:id', (req, res) => {
+  const { project_id, description } = req.body;
   const { id } = req.params;
   const updatedAction = req.body;
+
+  if (!project_id || !description) {
+    res.status(400).json({ error: 'Please provide both project_id and description' });
+  }
+
+  if (description.length > 128) {
+    res.status(400).json({ error: 'Description must not exceed 128 characters' });
+  }
+
   db
     .update(id, updatedAction)
     .then(updatedAction => res.status(200).json({ updatedAction }))
@@ -38,6 +59,7 @@ router.put('/:id', (req, res) => {
 
 router.delete('/:id', (req, res) => {
   const { id } = req.params;
+
   db
     .remove(id)
     .then(response => res.status(200).json({ response }))
