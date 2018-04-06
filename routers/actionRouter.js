@@ -7,30 +7,24 @@ const db = require('../data/helpers/actionModel');
 router.get('/', (req, res) => {
   db
     .get()
-    .then(actions => {
-      res.status(200).json({ actions });
-    })
-    .catch(error => res.status(500).json({ error }));
+    .then(actions => res.status(200).json({ actions }))
+    .catch(error => res.status(500).json({ error: 'Error fetching actions' }));
 });
 
 router.get('/:id', (req, res) => {
   const { id } = req.params;
   db
     .get(id)
-    .then(action => {
-      res.status(200).json({ action });
-    })
-    .catch(error => res.status(500).json({ error }));
+    .then(action => res.status(200).json({ action }))
+    .catch(error => res.status(500).json({ error: `Error fetching action ${id}` }));
 });
 
 router.post('/', (req, res) => {
-  const updatedAction = req.body;
+  const newAction = req.body;
   db
-    .insert(updatedAction)
-    .then(action => {
-      res.status(200).json({ action });
-    })
-    .catch(error => res.status(500).json({ error }));
+    .insert(newAction)
+    .then(newAction => res.status(200).json({ newAction }))
+    .catch(error => res.status(500).json({ error: 'Error creating action' }));
 });
 
 router.put('/:id', (req, res) => {
@@ -38,20 +32,16 @@ router.put('/:id', (req, res) => {
   const updatedAction = req.body;
   db
     .update(id, updatedAction)
-    .then(updatedAction => {
-      res.status(200).json({ updatedAction });
-    })
-    .catch(error => res.status(500).json({ error }));
+    .then(updatedAction => res.status(200).json({ updatedAction }))
+    .catch(error => res.status(500).json({ error: 'Error updating action' }));
 });
 
 router.delete('/:id', (req, res) => {
   const { id } = req.params;
   db
     .remove(id)
-    .then(response => {
-      res.status(200).json({ response });
-    })
-    .catch(error => res.status(500).json({ error }));
+    .then(response => res.status(200).json({ response }))
+    .catch(error => res.status(500).json({ error: `Error deleting action ${id}` }));
 });
 
 module.exports = router;
